@@ -63,5 +63,3 @@ docker compose up -d --build
 ### 環境參數（重點）
 - `RATE_PER_SEC`：每個 Worker 每秒處理的訊息數（預設 20）。可於 `docker-compose.yml` 的 `worker.environment` 調整。
 
-## 授權
-MIT
