@@ -1,5 +1,8 @@
 # Massaging Queue Demo (FastAPI + RabbitMQ + Celery + React/Tailwind)
 
+[Demo 影片（YouTube）](https://www.youtube.com/watch?v=AhSy5u1zgno)
+
+
 一個 **High Level、可在 5–8 分鐘清楚講解的端到端 PoC**：
 - 前端：React 18 + Tailwind（單頁：建立 Campaign → 發送 → 查統計）
 - 後端：FastAPI（3 支 API）
