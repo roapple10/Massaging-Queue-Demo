@@ -46,18 +46,8 @@
 3. Celery Worker 消費任務、模擬外部發送、寫回 `SENT` 與事件。
 4. 前端查 `stats` 顯示進度。
 
-#### 3.1 Mermaid 架構圖
-```mermaid
-graph TD
-  A["React + Tailwind SPA"] -->|REST/JSON| B["FastAPI API"]
-  B -->|SQL (ORM)| D["PostgreSQL"]
-  B -->|Publish job| C["RabbitMQ"]
-  C --> E["Celery Worker"]
-  E -->|Mock provider send| F["Event table (PostgreSQL)"]
-  E -->|Update status| D
-```
 
-#### 3.2 Mermaid 時序圖（Create → Send → Refresh）
+#### 3.1 Mermaid 時序圖（Create → Send → Refresh）
 ```mermaid
 sequenceDiagram
   participant U as User (Browser)
