@@ -1,0 +1,73 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/postgres
+      RABBITMQ_URL: amqp://guest:guest@mq:5672//
+      SEED_ON_START: "1"
+      CORS_ORIGINS: "*"
+    depends_on:
+      db:
+        condition: service_healthy
+      mq:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/postgres
+      RABBITMQ_URL: amqp://guest:guest@mq:5672//
+      # Per-worker simple rate limit (messages per second)
+      RATE_PER_SEC: "20"
+    depends_on:
+      api:
+        condition: service_started
+    command: ["celery", "-A", "celery_app.celery", "worker", "--loglevel=INFO"]
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      - VITE_API_BASE=http://localhost:8000
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+
+volumes:
+  dbdata:
