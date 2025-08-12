@@ -1,4 +1,4 @@
-# Massaging Queue Demo (FastAPI + RabbitMQ + Celery + React/Tailwind)
+# Messaging Queue Demo (FastAPI + RabbitMQ + Celery + React/Tailwind)
 
 [Demo 影片（YouTube）](https://www.youtube.com/watch?v=AhSy5u1zgno)
 
